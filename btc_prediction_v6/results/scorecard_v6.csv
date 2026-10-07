@@ -1,5 +1,0 @@
-,sharpe >= 1.0,sharpe > buy&hold,|MDD| <= 0.75 * buy&hold,bootstrap 5% sharpe > 0,losing quarters < buy&hold,PASS
-BTC_BUY_HOLD,False,False,False,True,False,False
-EW_BUY_HOLD,False,False,False,True,False,False
-BTC_TREND,True,True,True,True,False,False
-MULTI_TREND,False,True,True,True,False,False
