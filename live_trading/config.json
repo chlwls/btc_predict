@@ -1,0 +1,7 @@
+{
+  "capital_cap_krw": 500000,
+  "kill_drawdown": 0.36,
+  "rebalance_tolerance": 0.10,
+  "min_order_krw": 5000,
+  "fee_buffer": 0.002
+}

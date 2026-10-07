@@ -9,3 +9,8 @@ btc_prediction_v5/results/
 btc_prediction_v6/results/
 btc_prediction_v6/data/
 paper_trading/paper_console.log
+live_trading/upbit_keys.env
+live_trading/live_state.json
+live_trading/live_log.csv
+live_trading/live_console.log
+live_trading/__pycache__/
