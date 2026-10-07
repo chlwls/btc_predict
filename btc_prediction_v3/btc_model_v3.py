@@ -162,7 +162,7 @@ def make_features(raw, horizon=12):
         df[f"sma_{n}"] = df["close"].rolling(n).mean()
         df[f"dist_sma_{n}"] = df["close"] / df[f"sma_{n}"] - 1
 
-    for n in [8, 20, 50]:
+    for n in [8, 20, 50, 200]:
         df[f"ema_{n}"] = df["close"].ewm(span=n, adjust=False).mean()
         df[f"dist_ema_{n}"] = df["close"] / df[f"ema_{n}"] - 1
 
@@ -271,11 +271,17 @@ def get_feature_columns(df):
     return cols
 
 
-def split_data(df):
+def split_data(df, horizon):
+    # Labels look `horizon` bars ahead, so drop the last `horizon` rows of
+    # each earlier block; otherwise their targets overlap the next block.
     n = len(df)
     train_end = int(n * 0.65)
     valid_end = int(n * 0.80)
-    return df.iloc[:train_end], df.iloc[train_end:valid_end], df.iloc[valid_end:]
+    return (
+        df.iloc[:train_end - horizon],
+        df.iloc[train_end:valid_end - horizon],
+        df.iloc[valid_end:],
+    )
 
 
 def make_models():
@@ -472,7 +478,7 @@ def walk_forward(df, features, horizon, fee, slippage):
         if test_end <= test_start or train_end < 3000:
             continue
 
-        train = df.iloc[:train_end].dropna(subset=features + ["target", "future_return"])
+        train = df.iloc[:train_end - horizon].dropna(subset=features + ["target", "future_return"])
         test = df.iloc[test_start:test_end].dropna(subset=features + ["target", "future_return"])
 
         if len(test) < 100:
@@ -516,13 +522,13 @@ def main():
 
     log("V3 started")
     raw = fetch_binance_klines(years=args.years)
-    df = make_features(raw, args.horizon)
+    full = make_features(raw, args.horizon)
 
-    df = df.dropna(subset=["future_return", "future_log_return"]).copy()
+    df = full.dropna(subset=["future_return", "future_log_return"]).copy()
     features = get_feature_columns(df)
     df = df.dropna(subset=features + ["target", "future_return"]).copy()
 
-    train, valid, test = split_data(df)
+    train, valid, test = split_data(df, args.horizon)
     log(f"rows={len(df):,}")
     log(f"train={len(train):,}, valid={len(valid):,}, test={len(test):,}")
     log(f"feature_count={len(features)}")
@@ -575,7 +581,7 @@ def main():
         }
 
     comparison = pd.DataFrame(model_rows).sort_values(
-        ["test_auc", "strategy_return"], ascending=False
+        ["valid_auc", "test_auc"], ascending=False
     )
     comparison.to_csv(RESULT_DIR / "model_comparison_v3.csv", index=False)
 
@@ -624,12 +630,14 @@ def main():
 
     wf = walk_forward(df, features, args.horizon, args.fee, args.slippage)
 
-    latest = df.iloc[-1]
-    latest_X = latest[features].to_frame().T
+    # Use the newest completed bar, not the last labelled row (horizon bars older).
+    latest_X = full[features].dropna().iloc[[-1]].astype(float)
+    latest = full.loc[latest_X.index[0]]
     latest_prob = float(winner["model"].predict_proba(latest_X)[:, 1][0])
+    latest_reg = float(reg_model.predict(latest_X)[0])
 
     latest_info = {
-        "timestamp": str(df.index[-1]),
+        "timestamp": str(latest_X.index[0]),
         "close": float(latest["close"]),
         "probability_up": latest_prob,
         "probability_down": 1 - latest_prob,
@@ -640,6 +648,7 @@ def main():
         "horizon_hours": args.horizon,
         "fee_per_side": args.fee,
         "slippage_per_side": args.slippage,
+        "regression_log_return": latest_reg,
         "regression_note": "Regression model predicts future log return; latest regression value is not used for the decision."
     }
     with open(RESULT_DIR / "latest_prediction_v3.json", "w", encoding="utf-8") as f:
