@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<title>작물 추천 샘플</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+:root{--green:#1fa463;--green-dark:#0e7a45;--green-soft:#e8f6ee;--lime:#c8f169;--soft:#f5f8f3;--line:#edf0ea;--text:#1b1f1c;--muted:#7a817b;--up:#e5483e;--down:#2f6fe4;--warn-bg:#fff4dc;--warn-line:#f5cf7a;--radius:20px}
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:var(--text);font-family:"Noto Sans KR","WenQuanYi Zen Hei",sans-serif;font-size:15px;line-height:1.5;width:1280px}
+h1,h2,h3{margin:0;line-height:1.3}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} .small{font-size:13px}
+.up{color:var(--up)} .down{color:var(--down)}
+.ticker{background:var(--green-dark);color:#e3f6ea;font-size:13px;padding:7px 20px;white-space:nowrap;overflow:hidden}
+.ticker span{margin-right:30px} .ticker b{color:#fff;margin-right:6px}
+.header{border-bottom:1px solid var(--line)}
+.row1{max-width:1240px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:24px}
+.logo{font-weight:800;font-size:24px;color:var(--green);letter-spacing:-.5px}
+.search{flex:1;max-width:420px;height:44px;border:2px solid var(--green);border-radius:999px;display:flex;align-items:center;padding:0 6px 0 16px;color:var(--muted);font-size:14px}
+.search i{margin-left:auto;background:var(--green);color:#fff;border-radius:999px;padding:6px 14px;font-style:normal;font-weight:700}
+.user{margin-left:auto;background:var(--soft);border-radius:999px;padding:7px 14px;font-size:14px}
+.nav{max-width:1240px;margin:0 auto;padding:0 20px;display:flex;gap:28px;font-weight:600;font-size:15px}
+.nav a{padding:10px 0 12px;border-bottom:3px solid transparent}
+.nav a.on{color:var(--green);border-color:var(--green)}
+.nav .new{font-size:10px;background:var(--lime);color:var(--green-dark);border-radius:6px;padding:1px 5px;margin-left:4px;vertical-align:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:28px 20px 60px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px}
+.head p{margin:4px 0 0;color:var(--muted)}
+.badge-sample{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;color:#8a5a00}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:22px;align-items:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px}
+.card h2{font-size:18px}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:12px}
+.card-head p{margin:2px 0 0;color:var(--muted);font-size:13px;max-width:520px}
+label.f{display:block;font-size:13px;font-weight:600;margin:16px 0 6px}
+.sel{height:42px;border:1px solid #dfe5dc;border-radius:12px;display:flex;align-items:center;padding:0 14px;justify-content:space-between}
+.sel:after{content:"▾";color:var(--muted)}
+.land{border:1px solid #dfe5dc;border-radius:14px;padding:12px 14px;margin-bottom:8px;display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center}
+.land.on{border-color:var(--green);background:var(--green-soft)}
+.chk{width:20px;height:20px;border-radius:6px;border:2px solid #cfd6cc;display:grid;place-items:center;font-size:13px;color:#fff}
+.land.on .chk{background:var(--green);border-color:var(--green)}
+.land b{display:block;font-size:14px} .land small{color:var(--muted);font-size:12px}
+.area{display:flex;align-items:center;gap:6px}
+.area span.v{width:78px;height:34px;border:1px solid #dfe5dc;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:flex-end;padding:0 10px;font-weight:600}
+.add{font-size:13px;color:var(--green);font-weight:600;margin-top:4px}
+.hint{margin-top:8px;background:var(--soft);border-radius:12px;padding:10px 12px;font-size:12.5px;color:#4d554f}
+.go{margin-top:18px;height:48px;border-radius:14px;background:var(--green);color:#fff;font-weight:700;display:grid;place-items:center;font-size:16px}
+.right{display:grid;gap:22px}
+.reco{background:linear-gradient(135deg,#0e7a45,#1fa463);color:#fff;border:none;display:grid;grid-template-columns:1fr 1.05fr;gap:20px}
+.reco .tag{display:inline-block;background:var(--lime);color:var(--green-dark);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
+.reco h2{font-size:30px;margin:10px 0 2px;font-weight:800}
+.reco h2 small{font-size:15px;font-weight:500;opacity:.85;margin-left:6px}
+.reco p{margin:4px 0 0;opacity:.92;font-size:14px}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:rgba(255,255,255,.12);border-radius:14px;padding:12px 14px}
+.kpi span{font-size:12px;opacity:.85;display:block}
+.kpi b{font-size:20px;font-weight:800;white-space:nowrap}
+.kpi em{font-style:normal;font-size:12px;opacity:.85;display:block;margin-top:2px}
+.second{margin-top:14px;background:rgba(255,255,255,.12);border-radius:14px;padding:10px 14px;font-size:13.5px}
+.seg{display:inline-flex;background:var(--soft);border-radius:12px;padding:3px}
+.seg span{white-space:nowrap;padding:6px 12px;border-radius:9px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg span.on{background:#fff;color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tabs{display:flex;gap:8px;margin-bottom:6px}
+.tabs span{padding:6px 14px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:600}
+.tabs span.on{background:var(--text);color:#fff;border-color:var(--text)}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--muted);margin:6px 0 2px}
+.legend i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:5px;vertical-align:1px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line)}
+td.n,th.n{text-align:right}
+tr.top td{background:#f3fbf6}
+.rel{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.rel.g{background:var(--green-soft);color:var(--green-dark)}
+.rel.y{background:#fff4dc;color:#8a5a00}
+.rel.r{background:#fdecea;color:#b3261e}
+.warn{background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:14px;padding:12px 16px;font-size:13px;color:#5c4300}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+svg text{font-family:inherit}
+</style></head>
+<body>
+<div class="ticker"><span><b>배추</b>1,240원/kg <em class="up">▲ 1.2%</em></span><span><b>양파</b>1,450원/kg <em class="down">▼ 0.8%</em></span><span><b>토마토</b>3,100원/kg <em class="up">▲ 2.4%</em></span><span><b>딸기</b>12,500원/kg <em class="up">▲ 3.1%</em></span><span><b>대파</b>2,100원/kg <em class="down">▼ 1.5%</em></span><span><b>오이</b>2,400원/kg <em class="up">▲ 0.6%</em></span></div>
+<div class="header">
+  <div class="row1"><div class="logo">팜비드</div><div class="search">품목, 경매, 뉴스 검색<i>검색</i></div><div class="user">🔔 3 · 박농부 님</div></div>
+  <div class="nav"><a>홈</a><a>시세·수급</a><a>AI 가격예측</a><a class="on">작물 추천<span class="new">NEW</span></a><a>경매 마켓</a><a>농업 뉴스</a><a>게시판</a><a>서비스 소개</a></div>
+</div>
+
+<div class="wrap">
+  <div class="head">
+    <div><h1>작물 추천</h1><p>가진 땅을 작형별로 알려 주시면, 작물마다 다른 수확 시기를 계산해 그때의 예상 가격으로 비교해 골라 드려요.</p></div>
+    <span class="badge-sample">샘플 화면 · 숫자는 예시예요</span>
+  </div>
+
+  <div class="layout">
+    <!-- 입력 -->
+    <div class="card">
+      <h2>내 땅 정보</h2>
+      <label class="f">지역</label><div class="sel">충청남도 논산시</div>
+      <label class="f">심을 시기</label><div class="sel">2026년 11월</div>
+      <div class="small muted" style="margin-top:6px">→ 작물마다 수확 시기를 따로 계산해 그때 가격으로 비교해요</div>
+      <label class="f">작형별 토지</label>
+      <div class="land on"><div class="chk">✓</div><div><b>노지 (밭)</b><small>양파·마늘·대파·시금치 등</small></div><div class="area"><span class="v">1,200</span>평</div></div>
+      <div class="land on"><div class="chk">✓</div><div><b>시설 (비닐하우스)</b><small>토마토·딸기·오이·파프리카 등</small></div><div class="area"><span class="v">600</span>평</div></div>
+      <div class="land"><div class="chk"></div><div><b>논</b><small>쌀·콩 등</small></div><div class="area"><span class="v muted">0</span>평</div></div>
+      <div class="land"><div class="chk"></div><div><b>과수원</b><small>사과·배·복숭아 등</small></div><div class="area"><span class="v muted">0</span>평</div></div>
+      <div class="add">+ 작형 추가</div>
+      <div class="hint">1,800평 ≈ 59.5a. 작형마다 그 땅에서 기를 수 있고 이 시기에 심을 수 있는 작물만 후보로 골라요.</div>
+      <div class="go">전망 보기</div>
+    </div>
+
+    <div class="right">
+      <div class="card reco">
+        <div>
+          <span class="tag">수확 시기 가격 기준 추천</span>
+          <h2>토마토<small>시설 600평</small></h2>
+          <p>11월에 심으면 <b>2월~6월</b>에 수확해요. 수확하는 동안 예상 도매가 평균이 지금보다 <b>29% 높아</b> 후보 중 가장 좋아요. 가장 비싼 달은 <b>4월</b>이에요.</p>
+          <div class="second">노지 1,200평 추천: <b>대파</b> · 4~5월 수확 · 평균 2,430원/kg (지금보다 +15.5%)</div>
+        </div>
+        <div class="kpis">
+          <div class="kpi"><span>수확 기간</span><b class="num">2월 ~ 6월</b><em>심고 3~7개월 뒤</em></div>
+          <div class="kpi"><span>수확기 평균 예상가</span><b class="num">4,010원/kg</b><em>80% 범위 3,250~4,900원</em></div>
+          <div class="kpi"><span>지금 대비</span><b class="num">▲ 29.4%</b><em>지금 3,100원/kg</em></div>
+          <div class="kpi"><span>600평 예상 매출</span><b class="num">7,940만원</b><em>10a당 10t 수확 가정</em></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div><h2>작물별 수확 시기와 그때 가격</h2><p>11월에 심었을 때 자라는 기간(회색)과 수확 기간(색 칸)이에요. 칸 안 숫자는 그 달의 예상 도매가(원/kg)이고, 색은 지금보다 얼마나 비싼지예요.</p></div>
+          <div class="seg"><span class="on">수확기 평균</span><span>가장 비싼 달</span><span>예상 매출</span></div>
+        </div>
+        <div class="tabs"><span class="on">전체 10</span><span>노지 5</span><span>시설 5</span></div>
+        <div class="legend"><span><i style="background:#cfd6cc;height:4px"></i>자라는 기간</span><span><i style="background:#e5483e"></i>지금보다 비쌈</span><span><i style="background:#2f6fe4"></i>지금보다 쌈</span><span><i style="background:#fff;border:2px solid #1b1f1c;width:10px;height:10px"></i>가장 비싼 수확 달</span></div>
+        <div id="gantt"></div>
+      </div>
+
+      <div class="two">
+        <div class="card">
+          <div class="card-head"><div><h2>토마토 월별 예상 가격</h2><p>초록 칸이 수확 기간이에요 (원/kg)</p></div></div>
+          <div id="line"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div><h2>같은 5월이어도 결과가 달라요</h2><p>6개월 뒤 한 시점 가격 vs 실제 수확기 평균 가격 (지금 대비)</p></div></div>
+          <div id="vs"></div>
+        </div>
+      </div>
+
+      <div class="warn">⚠ 수확이 멀수록 예측 오차가 커져요. 1~2개월 뒤는 평균 오차 약 17%, 6개월 이상은 약 23%예요. 7개월 뒤 수확(양파·마늘)은 모델 예측 범위 밖이라 같은 시기의 작년 가격 흐름으로 보완한 값이에요. 딸기처럼 이 시기에 심을 수 없는 작물은 회색으로 보여요.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const NS="http://www.w3.org/2000/svg";
+function el(t,a,p,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;p&&p.appendChild(e);return e}
+const fmt=n=>Math.round(n).toLocaleString("ko-KR");
+const M=["11월","12월","1월","2월","3월","4월","5월","6월","7월"];
+// [이름, 작형, 지금가, 수확 시작 idx, 수확 달별 예상가[], 신뢰, 심을 수 있음]
+const C=[
+ ["토마토","시설",3100,3,[4200,4400,4600,3850,3000],"g",1],
+ ["대파","노지",2100,5,[2500,2350],"y",1],
+ ["오이","시설",2400,2,[2900,3100,2650,2300],"g",1],
+ ["시금치","노지",3800,3,[4600,3900],"r",1],
+ ["파프리카","시설",4600,4,[5600,5300,5050,4500,4300],"g",1],
+ ["봄동","노지",1900,3,[2100,1700],"r",1],
+ ["상추","시설",5200,1,[5600,4900,4300],"r",1],
+ ["양파","노지",1450,7,[1300],"y",1],
+ ["피마늘","노지",6900,7,[6200],"r",1],
+ ["딸기","시설",12500,0,[],"g",0],
+];
+const rows=C.map(c=>{const avg=c[4].length?c[4].reduce((a,b)=>a+b)/c[4].length:null;return{n:c[0],t:c[1],now:c[2],h0:c[3],p:c[4],rel:c[5],ok:c[6],avg,ch:avg?(avg/c[2]-1)*100:null}});
+const RL={g:["바로 쓸 만함","#e8f6ee","#0e7a45"],y:["조건부","#fff4dc","#8a5a00"],r:["주의","#fdecea","#b3261e"]};
+function heat(pct){const a=Math.min(1,Math.abs(pct)/35);return pct>=0?`rgba(229,72,62,${0.12+0.78*a})`:`rgba(47,111,228,${0.12+0.78*a})`}
+(()=>{const W=820,rh=40,top=30,H=top+rows.length*rh+6,L=120,X0=L,X1=545,cw=(X1-X0)/9;
+ const s=el("svg",{width:"100%",viewBox:`0 0 ${W} ${H}`},document.getElementById("gantt"));
+ M.forEach((m,i)=>{el("text",{x:X0+cw*i+cw/2,y:16,"text-anchor":"middle","font-size":11.5,fill:"#7a817b","font-weight":i===0?700:400},s,i===0?"11월 심기":m);
+   if(i)el("line",{x1:X0+cw*i,x2:X0+cw*i,y1:top-6,y2:H-4,stroke:"#f1f3ef"},s)});
+ el("text",{x:X0+cw*2+cw/2,y:16,dx:0,"font-size":0},s);
+ el("text",{x:628,y:16,"text-anchor":"end","font-size":11.5,fill:"#7a817b"},s,"수확기 평균");
+ el("text",{x:705,y:16,"text-anchor":"end","font-size":11.5,fill:"#7a817b"},s,"지금 대비");
+ el("text",{x:812,y:16,"text-anchor":"end","font-size":11.5,fill:"#7a817b"},s,"예측 신뢰");
+ rows.forEach((r,i)=>{const y=top+i*rh+rh/2;
+  if(i===0)el("rect",{x:2,y:y-rh/2+2,width:W-4,height:rh-4,rx:8,fill:"#eaf7ef"},s);
+  el("text",{x:10,y:y+5,"font-size":14,"font-weight":i===0?800:600,fill:r.ok?"#1b1f1c":"#b4bab5"},s,r.n);
+  el("text",{x:10+r.n.length*15+4,y:y+5,"font-size":11.5,fill:"#9aa29b"},s,r.t);
+  if(!r.ok){el("rect",{x:X0+4,y:y-9,width:X1-X0-8,height:18,rx:6,fill:"#f5f6f4"},s);el("text",{x:(X0+X1)/2,y:y+4,"text-anchor":"middle","font-size":12,fill:"#9aa29b"},s,"11월에는 심을 수 없어요 (정식 9월)");return}
+  // 자라는 기간
+  el("line",{x1:X0+cw*0.5,x2:X0+cw*r.h0,y1:y,y2:y,stroke:"#cfd6cc","stroke-width":4,"stroke-linecap":"round"},s);
+  el("circle",{cx:X0+cw*0.5,cy:y,r:4.5,fill:"#1fa463"},s);
+  const mx=Math.max(...r.p);
+  r.p.forEach((v,j)=>{const x=X0+cw*(r.h0+j)+1.5,pct=(v/r.now-1)*100;
+   el("rect",{x,y:y-13,width:cw-3,height:26,rx:6,fill:heat(pct),stroke:v===mx&&r.p.length>1?"#1b1f1c":"none","stroke-width":2},s);
+   el("text",{x:x+(cw-3)/2,y:y+4,"text-anchor":"middle","font-size":11,"font-weight":700,fill:Math.abs(pct)>18?"#fff":"#1b1f1c"},s,fmt(v))});
+  el("text",{x:628,y:y+5,"text-anchor":"end","font-size":13.5,"font-weight":700,fill:"#1b1f1c"},s,fmt(r.avg)+"원");
+  el("text",{x:705,y:y+5,"text-anchor":"end","font-size":13.5,"font-weight":800,fill:Math.abs(r.ch)<0.05?"#7a817b":r.ch>=0?"#e5483e":"#2f6fe4"},s,(Math.abs(r.ch)<0.05?"– 0.0%":(r.ch>=0?"▲ ":"▼ ")+Math.abs(r.ch).toFixed(1)+"%"));
+  const [lb,bg,fg]=RL[r.rel];const w=lb.length*11.5+14;
+  el("rect",{x:812-w,y:y-10,width:w,height:20,rx:10,fill:bg},s);el("text",{x:812-w/2,y:y+4,"text-anchor":"middle","font-size":11,"font-weight":700,fill:fg},s,lb);
+ });})();
+// 토마토 월별
+(()=>{const W=400,H=240,L=46,R=W-12,T=18,B=H-28;
+ const f=[3100,3350,3800,4200,4400,4600,3850,3000,2800],lo=[3100,3150,3350,3500,3550,3650,3020,2400,2200],hi=[3100,3600,4300,4950,5300,5600,4700,3700,3500];
+ const x=i=>L+i*(R-L)/8,y=v=>B-(v-2000)/(6000-2000)*(B-T);
+ const s=el("svg",{width:"100%",viewBox:`0 0 ${W} ${H}`},document.getElementById("line"));
+ el("rect",{x:x(3)-12,y:T-6,width:x(7)-x(3)+24,height:B-T+6,fill:"#e8f6ee",rx:6},s);
+ el("text",{x:(x(3)+x(7))/2,y:T+6,"text-anchor":"middle","font-size":10.5,"font-weight":700,fill:"#0e7a45"},s,"수확 기간");
+ [2000,3000,4000,5000,6000].forEach(t=>{el("line",{x1:L,x2:R,y1:y(t),y2:y(t),stroke:"#eef1ec"},s);el("text",{x:L-6,y:y(t)+4,"text-anchor":"end","font-size":10.5,fill:"#7a817b"},s,fmt(t))});
+ M.forEach((m,i)=>el("text",{x:x(i),y:H-8,"text-anchor":"middle","font-size":10.5,fill:"#7a817b"},s,m));
+ el("path",{d:"M"+hi.map((v,i)=>x(i)+","+y(v)).join("L")+"L"+lo.map((v,i)=>x(i)+","+y(v)).reverse().join("L")+"Z",fill:"#f7c3bf",opacity:.5},s);
+ el("polyline",{points:f.map((v,i)=>x(i)+","+y(v)).join(" "),fill:"none",stroke:"#e5483e","stroke-width":2.2,"stroke-dasharray":"6 4"},s);
+ f.forEach((v,i)=>{if(i>=3&&i<=7)el("circle",{cx:x(i),cy:y(v),r:i===5?6:4,fill:i===5?"#fff":"#e5483e",stroke:"#e5483e","stroke-width":2},s)});
+ el("text",{x:x(5),y:y(4600)-12,"text-anchor":"middle","font-size":12,"font-weight":800,fill:"#e5483e"},s,"4월 4,600원");
+ el("circle",{cx:x(0),cy:y(3100),r:4,fill:"#1b1f1c"},s);el("text",{x:x(0)+6,y:y(3100)+16,"font-size":10.5,fill:"#7a817b"},s,"지금 3,100");
+})();
+// 시점 vs 수확기
+(()=>{const D=[["토마토",24.2,29.4],["양파",22.8,-10.3],["대파",11.9,15.5],["시금치",13.2,11.8],["피마늘",2.9,-10.1]];
+ const W=400,H=240,L=62,R=W-14,T=28,rh=38;const x=v=>L+(v+20)/(50)*(R-L);
+ const s=el("svg",{width:"100%",viewBox:`0 0 ${W} ${H}`},document.getElementById("vs"));
+ [-20,-10,0,10,20,30].forEach(t=>{el("line",{x1:x(t),x2:x(t),y1:T-8,y2:T+D.length*rh,stroke:t===0?"#9aa29b":"#eef1ec"},s);el("text",{x:x(t),y:T-12,"text-anchor":"middle","font-size":10,fill:"#7a817b"},s,(t>0?"+":"")+t+"%")});
+ D.forEach(([n,a,b],i)=>{const y=T+i*rh+rh/2;
+  el("text",{x:6,y:y+4,"font-size":13,"font-weight":600,fill:"#1b1f1c"},s,n);
+  el("line",{x1:x(a),x2:x(b),y1:y,y2:y,stroke:"#cfd6cc","stroke-width":3},s);
+  el("circle",{cx:x(a),cy:y,r:5,fill:"#fff",stroke:"#9aa29b","stroke-width":2},s);
+  el("circle",{cx:x(b),cy:y,r:6,fill:b>=0?"#e5483e":"#2f6fe4"},s);
+  if(n==="양파")el("text",{x:x(b)-8,y:y-9,"font-size":10.5,"font-weight":700,fill:"#2f6fe4"},s,"6월 햇양파 출하로 하락");});
+ el("circle",{cx:L,cy:H-12,r:4,fill:"#fff",stroke:"#9aa29b","stroke-width":2},s);el("text",{x:L+8,y:H-8,"font-size":10.5,fill:"#7a817b"},s,"5월 한 시점");
+ el("circle",{cx:L+90,cy:H-12,r:5,fill:"#e5483e"},s);el("text",{x:L+98,y:H-8,"font-size":10.5,fill:"#7a817b"},s,"실제 수확기 평균");
+})();
+</script>
+</body></html>
